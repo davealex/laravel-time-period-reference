@@ -1,0 +1,57 @@
+{
+    "name": "davealex/laravel-time-period-reference",
+    "description": "A service for processing string-based time references into carbon instances",
+    "keywords": [
+        "davealex",
+        "laravel",
+        "laravel-time-period-reference"
+    ],
+    "homepage": "https://github.com/davealex/laravel-time-period-reference",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "David Olaleye",
+            "email": "daveabiola@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.3.0",
+        "illuminate/config": "^12.1",
+        "illuminate/support": "^12.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Davealex\\LaravelTimePeriodReference\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Davealex\\LaravelTimePeriodReference\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Davealex\\LaravelTimePeriodReference\\LaravelTimePeriodReferenceServiceProvider"
+            ],
+            "aliases": {
+                "LaravelTimePeriodReference": "Davealex\\LaravelTimePeriodReference\\LaravelTimePeriodReferenceFacade"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
