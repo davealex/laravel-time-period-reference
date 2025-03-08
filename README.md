@@ -1,5 +1,3 @@
-# Very short description of the package
-
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/davealex/laravel-time-period-reference.svg?style=flat-square)](https://packagist.org/packages/davealex/laravel-time-period-reference)
 [![Total Downloads](https://img.shields.io/packagist/dt/davealex/laravel-time-period-reference.svg?style=flat-square)](https://packagist.org/packages/davealex/laravel-time-period-reference)
 ![GitHub Actions](https://github.com/davealex/laravel-time-period-reference/actions/workflows/main.yml/badge.svg)
