@@ -27,7 +27,7 @@ readonly class LaravelTimePeriodReference
 
         $timeReferenceStringValue = strtolower(trim($timeReferenceStringValue ?? $timeReference));
 
-        foreach ($this->config['units'] as $method => $references) {
+        foreach ($this->config['laravel-time-period-reference']['units'] as $method => $references) {
             foreach ($references as $reference) {
                 if (Str::contains($timeReferenceStringValue, $reference)) {
                     $value = $this->getPeriodValue($timeReferenceStringValue);
