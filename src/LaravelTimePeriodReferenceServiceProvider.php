@@ -2,6 +2,7 @@
 
 namespace Davealex\LaravelTimePeriodReference;
 
+use Illuminate\Config\Repository;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelTimePeriodReferenceServiceProvider extends ServiceProvider
@@ -26,7 +27,9 @@ class LaravelTimePeriodReferenceServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'laravel-time-period-reference');
 
         $this->app->singleton('laravel-time-period-reference', function () {
-            return new LaravelTimePeriodReference(config('laravel-time-period-reference'));
+            return new LaravelTimePeriodReference(
+                new Repository(config('laravel-time-period-reference'))
+            );
         });
     }
 }
