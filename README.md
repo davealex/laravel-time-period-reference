@@ -4,9 +4,9 @@
 
 # **Laravel Time Period Reference**
 
-A clean, flexible utility package for Laravel that converts natural-language time period references `(e.g., "3 hours ago", "1 week")` into precise **Carbon instances**.
+A clean, flexible utility package for Laravel that converts natural-language time period references **(e.g., "3 hours ago", "1 week")** into precise **Carbon instances**.
 
-This is ideal for handling user inputs, API requests, or configuration values that define a time window relative to `now()`. It supports custom units and integrates seamlessly with `PHP 8.1+ Enums`.
+This is ideal for handling user inputs, API requests, or configuration values that define a time window relative to `now()`. It supports custom units and integrates seamlessly with **PHP 8.1+ Enums**.
 
 ## **1. Installation**
 
@@ -47,7 +47,7 @@ The core functionality is exposed via the **Facade**, the **Service Container**,
 
 ### **Converting a String Reference**
 
-Use the `toCarbonInstance()` method with a string value like "2 days ago", "5 years", or "10 min". The method returns a fully configured Carbon instance relative to the current time.
+Use the `toCarbonInstance()` method with a string value like **"2 days ago", "5 years", or "10 min"**. The method returns a fully configured Carbon instance relative to the current time.
 
 ````
 use Davealex\LaravelTimePeriodReference\Facades\LaravelTimePeriodReference;
@@ -64,7 +64,7 @@ dd($carbonInstance->toDateString());
 
 ### **Converting a Backed Enum**
 
-For clean, type-safe code, the package supports PHP 8.1+ BackedEnums whose values are the reference strings.
+For clean, type-safe code, the package supports **PHP 8.1+ BackedEnums** whose values are the reference strings.
 
 ````
 // Define your Enum  
