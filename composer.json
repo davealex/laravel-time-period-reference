@@ -47,7 +47,7 @@
                 "Davealex\\LaravelTimePeriodReference\\LaravelTimePeriodReferenceServiceProvider"
             ],
             "aliases": {
-                "LaravelTimePeriodReference": "Davealex\\LaravelTimePeriodReference\\LaravelTimePeriodReferenceFacade"
+                "LaravelTimePeriodReference": "Davealex\\LaravelTimePeriodReferecnce\\Facades\\LaravelTimePeriodReference"
             }
         }
     },

@@ -1,13 +1,13 @@
 <?php
 
-namespace Davealex\LaravelTimePeriodReference;
+namespace Davealex\LaravelTimePeriodReference\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
  * @see \Davealex\LaravelTimePeriodReference\LaravelTimePeriodReference
  */
-class LaravelTimePeriodReferenceFacade extends Facade
+class LaravelTimePeriodReference extends Facade
 {
     /**
      * Get the registered name of the component.

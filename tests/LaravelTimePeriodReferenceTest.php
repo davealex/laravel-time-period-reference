@@ -94,9 +94,6 @@ class LaravelTimePeriodReferenceTest extends TestCase
      */
     public function testToCarbonInstanceIsCaseInsensitive(): void
     {
-//        $result = $this->timePeriodReference->toCarbonInstance('5 YEARS ago');
-//        $this->assertEquals(Carbon::now()->subYears(5)->toDateString(), $result->toDateString());
-
         Carbon::setTestNow(Carbon::parse('2020-01-01'));
         $result = $this->timePeriodReference->toCarbonInstance('5 YEARS ago');
         $this->assertEquals('2015-01-01', $result->toDateString());
