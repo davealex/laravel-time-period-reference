@@ -32,6 +32,9 @@ class LaravelTimePeriodReferenceTest extends TestCase
         $this->timePeriodReference = new LaravelTimePeriodReference($config);
     }
 
+    /**
+     * @throws InvalidTimeReferenceCarbonInstance
+     */
     public function testToCarbonInstanceWithValidString(): void
     {
         $result = $this->timePeriodReference->toCarbonInstance('2 days ago');
@@ -39,6 +42,9 @@ class LaravelTimePeriodReferenceTest extends TestCase
         $this->assertEquals(Carbon::now()->subDays(2)->toDateString(), $result->toDateString());
     }
 
+    /**
+     * @throws InvalidTimeReferenceCarbonInstance
+     */
     public function testToCarbonInstanceWithValidStringBackedEnum(): void
     {
         $enum = TimeReferenceTestEnum::tryFrom('2 weeks ago');
@@ -81,5 +87,14 @@ class LaravelTimePeriodReferenceTest extends TestCase
 
         $this->expectException(InvalidTimeReferenceCarbonInstance::class);
         $timePeriodReference->toCarbonInstance('1 invalid');
+    }
+
+    /**
+     * @throws InvalidTimeReferenceCarbonInstance
+     */
+    public function testToCarbonInstanceIsCaseInsensitive(): void
+    {
+        $result = $this->timePeriodReference->toCarbonInstance('5 YEARS ago');
+        $this->assertEquals(Carbon::now()->subYears(5)->toDateString(), $result->toDateString());
     }
 }

@@ -26,9 +26,9 @@ class LaravelTimePeriodReferenceServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'laravel-time-period-reference');
 
-        $this->app->singleton('laravel-time-period-reference', function () {
+        $this->app->singleton('laravel-time-period-reference', function ($app) {
             return new LaravelTimePeriodReference(
-                new Repository(config('laravel-time-period-reference'))
+                $app->make(Repository::class)
             );
         });
     }

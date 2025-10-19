@@ -3,7 +3,7 @@
 namespace Davealex\LaravelTimePeriodReference;
 
 use Davealex\LaravelTimePeriodReference\Exceptions\InvalidTimeReferenceCarbonInstance;
-use Illuminate\Contracts\Config\Repository;
+use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use BackedEnum;
@@ -11,7 +11,7 @@ use BackedEnum;
 readonly class LaravelTimePeriodReference
 {
     public function __construct(
-        private Repository $config
+        private ConfigRepository $config
     ) {}
 
     /**
@@ -21,11 +21,13 @@ readonly class LaravelTimePeriodReference
      */
     public function toCarbonInstance(BackedEnum|string $timeReference): Carbon
     {
-        if ($timeReference instanceof BackedEnum) {
-            $timeReferenceStringValue = strtolower(trim($timeReference->value));
-        }
+        $timeReferenceString = match (true) {
+            $timeReference instanceof BackedEnum => $timeReference->value,
+            is_string($timeReference) => $timeReference,
+            default => throw new InvalidTimeReferenceCarbonInstance("Time reference must be a string or BackedEnum."),
+        };
 
-        $timeReferenceStringValue = strtolower(trim($timeReferenceStringValue ?? $timeReference));
+        $timeReferenceStringValue = strtolower(trim($timeReferenceString));
 
         foreach ($this->config['units'] as $method => $references) {
             foreach ($references as $reference) {
@@ -49,13 +51,18 @@ readonly class LaravelTimePeriodReference
     }
 
     /**
+     * Extract the first sequence of digits/numbers from the beginning of the string
+     * e.g., "5 years ago" -> "5"; "years 5" -> null
+     *
      * @param string $timeReference
-     * @return mixed
+     * @return int|null
      */
-    private function getPeriodValue(string $timeReference): mixed
+    private function getPeriodValue(string $timeReference): ?int
     {
-        $parts = explode(" ", $timeReference);
+        if (preg_match('/^\s*(\d+)/', $timeReference, $matches)) {
+            return (int) $matches[1];
+        }
 
-        return $parts[0];
+        return null;
     }
 }

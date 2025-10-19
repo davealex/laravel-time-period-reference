@@ -2,122 +2,142 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/davealex/laravel-time-period-reference.svg?style=flat-square)](https://packagist.org/packages/davealex/laravel-time-period-reference)
 [![run-tests](https://github.com/davealex/laravel-time-period-reference/actions/workflows/main.yml/badge.svg)](https://github.com/davealex/laravel-time-period-reference/actions/workflows/main.yml)
 
-# Laravel Time Period Reference
+# **Laravel Time Period Reference**
 
-This Laravel package provides a simple way to convert time period references (e.g., "2 days", "1 week") into `Carbon` instances.
+A clean, flexible utility package for Laravel that converts natural-language time period references (e.g., "3 hours ago", "1 week") into precise **Carbon instances**.
 
-## Installation
+This is ideal for handling user inputs, API requests, or configuration values that define a time window relative to now(). It supports custom units and integrates seamlessly with PHP 8.1+ Enums.
 
-You can install the package via composer:
+## **1. Installation**
 
-```bash
-composer require davealex/laravel-time-period-reference
-```
+You can install the package via Composer:
 
-## Configuration
+`composer require davealex/laravel-time-period-reference`
 
-Publish the configuration file to customize the time units and their corresponding time references:
+## **2. Configuration**
 
-```bash
-php artisan vendor:publish --provider="Davealex\LaravelTimePeriodReference\LaravelTimePeriodReferenceServiceProvider"
-```
+By default, the package supports common references (seconds, minutes, days, weeks, etc.). To customize or extend these references, publish the configuration file:
 
-### Example configuration
+`php artisan vendor:publish --provider="Davealex\LaravelTimePeriodReference\LaravelTimePeriodReferenceServiceProvider" --tag="config"`
 
-```php
+This creates `config/laravel-time-period-reference.php`.
+
+### **Example Configuration (config/laravel-time-period-reference.php)**
+
+The array keys correspond to the standard **Carbon method name** (e.g., `subDays`, `subWeeks`), and the values are the acceptable string references.
+
+````
 <?php
 
-return [
-    'units' => [
-        'day' => ['day', 'days'],
-        'week' => ['week', 'weeks'],
-        'month' => ['month', 'months'],
-        'year' => ['year', 'years'],
+return [  
+    'units' => [  
+    // Keys map to Carbon's sub[Unit]() methods (e.g., subSeconds(X))  
+    'seconds' => ['second', 'seconds', 'sec'],  
+    'minutes' => ['minutes', 'minute', 'min'],  
+    'hours' => ['hours', 'hour', 'hrs'],  
+    'days' => ['days', 'day'],  
+    // ... and so on  
     ],
 ];
-```
+````
 
-## Usage
-Use the LaravelTimePeriodReference class to convert time period references into Carbon instances.
+## **3. Usage**
 
-```php
+The core functionality is exposed via the **Facade**, the **Service Container**, or a **helper function** (if you choose to define one).
 
-// 1. Using facade
-use Davealex\LaravelTimePeriodReference\LaravelTimePeriodReferenceFacade;
+### **Converting a String Reference**
 
-$carbonInstance = LaravelTimePeriodReferenceFacade::toCarbonInstance('2 days ago');
+Use the `toCarbonInstance()` method with a string value like "2 days ago", "5 years", or "10 min". The method returns a fully configured Carbon instance relative to the current time.
 
-dd($carbonInstance->toString())
+````
+use Davealex\LaravelTimePeriodReference\Facades\LaravelTimePeriodReference;
 
-// 2. Manually instantiating the service class
+// Note: You must import the Facades namespace
+
+// The reference string is parsed for the number and unit.  
+$carbonInstance = LaravelTimePeriodReference::toCarbonInstance('2 days ago');
+// $carbonInstance is now Carbon::now()->subDays(2)
+
+// Output: e.g., 2024-10-26 (if today is 2024-10-28)  
+dd($carbonInstance->toDateString());
+````
+
+### **Converting a Backed Enum**
+
+For clean, type-safe code, the package supports PHP 8.1+ BackedEnums whose values are the reference strings.
+
+````
+// Define your Enum  
+enum TimeReferenceEnum: string  
+{  
+case TWO_WEEKS_AGO = '2 weeks ago';  
+case FIVE_YEARS = '5 years';  
+}
+
+// Pass the Enum instance directly to the service  
+$carbonInstance = LaravelTimePeriodReference::toCarbonInstance(TimeReferenceEnum::FIVE_YEARS);  
+// $carbonInstance is now Carbon::now()->subYears(5)
+````
+
+### **Manual Service Injection**
+
+You can also type-hint the service class in your controllers or other services:
+
+````
 use Davealex\LaravelTimePeriodReference\LaravelTimePeriodReference;
-use Illuminate\Config\Repository;
-use Illuminate\Support\Carbon;
 
-// Create a configuration array or use the config repository.
-$config = new Repository(config('time-period-reference'));
+class ReportController extends Controller  
+{  
+    public function __construct(  
+        private LaravelTimePeriodReference $timeReferenceService  
+    ) {}
 
-$timePeriodReference = new LaravelTimePeriodReference($config);
-
-// Convert a string time reference to a Carbon instance.
-$carbonInstance = $timePeriodReference->toCarbonInstance('2 days ago');
-
-if ($carbonInstance instanceof Carbon) {
-    echo $carbonInstance->toDateString(); // Output: e.g., 2024-10-26 (if today is 2024-10-28)
+    public function show(string $period)  
+    {  
+        // $period might be '3 months' from a route parameter  
+        $startTime = $this->timeReferenceService->toCarbonInstance($period);  
+        // ... fetch data using $startTime  
+    }  
 }
+````
 
-// Convert a BackedEnum time reference to a Carbon instance.
-enum TimeReferenceEnum: string
-{
-    case TWO_WEEKS = '2 weeks ago';
-}
+## **4. Exceptions**
 
-$enumInstance = TimeReferenceEnum::TWO_WEEKS;
+The package throws a single exception, `Davealex\LaravelTimePeriodReference\Exceptions\InvalidTimeReferenceCarbonInstance`, which covers all parsing and creation errors:
 
-$carbonInstanceFromEnum = $timePeriodReference->toCarbonInstance($enumInstance);
+* **Invalid Format:** (e.g., "days 2", "two days ago") - Numeric value expected before the unit.
+* **Unknown Unit:** (e.g., "2 decades ago") - The unit is not defined in the configuration.
+* **Carbon Error:** An internal error occurred during Carbon instance creation.
 
-if ($carbonInstanceFromEnum instanceof Carbon) {
-    echo $carbonInstanceFromEnum->toDateString();
-}
-```
-## Exceptions
+## **5. Testing**
 
-The package throws `Davealex\LaravelTimePeriodReference\Exceptions\InvalidTimeReferenceCarbonInstance` in the following cases:
+To run the package tests, use Composer:
 
-* Invalid time reference format (e.g., non-numeric value before unit).
-* Unknown time unit.
-* Error during Carbon instance creation.
+`composer test`
 
-## Testing
+or
 
-To run the tests, use PHPUnit:
+`./vendor/bin/phpunit`
 
-```bash
-./vendor/bin/phpunit 
-```
-or 
+## **6. Contribution and License**
 
-```bash
-composer test
-```
+### **Changelog**
 
-### Changelog
+Please see [CHANGELOG.md](http://docs.google.com/CHANGELOG.md) for more information on what has changed recently.
 
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
-
-## Contributing
+### **Contributing**
 
 Please feel free to contribute by submitting issues or pull requests.
 
-### Security
+### **Security**
 
-If you discover any security related issues, please email daveabiola@gmail.com instead of using the issue tracker.
+If you discover any security related issues, please email [daveabiola@gmail.com](mailto:daveabiola@gmail.com) instead of using the issue tracker.
 
-## Credits
+### **Credits**
 
--   [David Olaleye](https://github.com/davealex)
+* [David Olaleye](https://github.com/davealex)
+* All Contributors
 
-## License
+### **License**
 
 This package is open-source and available under the MIT license.
-
