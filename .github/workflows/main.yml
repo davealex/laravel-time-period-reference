@@ -41,7 +41,7 @@ jobs:
                   echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
             - name: Install dependencies
               run: |
-                  composer require "phpunit/phpunit:^11.0.1" "orchestra/testbench:^10.1" --no-interaction --no-update
+                  composer require "phpunit/phpunit:^11.5.3" "orchestra/testbench:^10.1" --no-interaction --no-update
                   composer update --${{ matrix.stability }} --prefer-dist --no-interaction
             - name: Execute tests
               run: vendor/bin/phpunit
