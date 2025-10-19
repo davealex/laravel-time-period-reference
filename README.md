@@ -4,9 +4,9 @@
 
 # **Laravel Time Period Reference**
 
-A clean, flexible utility package for Laravel that converts natural-language time period references (e.g., "3 hours ago", "1 week") into precise **Carbon instances**.
+A clean, flexible utility package for Laravel that converts natural-language time period references `(e.g., "3 hours ago", "1 week")` into precise **Carbon instances**.
 
-This is ideal for handling user inputs, API requests, or configuration values that define a time window relative to now(). It supports custom units and integrates seamlessly with PHP 8.1+ Enums.
+This is ideal for handling user inputs, API requests, or configuration values that define a time window relative to `now()`. It supports custom units and integrates seamlessly with `PHP 8.1+ Enums`.
 
 ## **1. Installation**
 
