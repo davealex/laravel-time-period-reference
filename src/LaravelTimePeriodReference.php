@@ -12,7 +12,21 @@ readonly class LaravelTimePeriodReference
 {
     public function __construct(
         private ConfigRepository $config
-    ) {}
+    ) {
+        if (!$this->config->has('units')) {
+            $this->config->set('units', self::DEFAULT_UNITS);
+        }
+    }
+
+    const array DEFAULT_UNITS = [
+        'seconds' => ['second', 'seconds', 'sec'],
+        'minutes' => ['minutes', 'minute', 'min'],
+        'hours' => ['hours', 'hour', 'hrs'],
+        'days' => ['days', 'day'],
+        'weeks' => ['weeks', 'week'],
+        'months' => ['months', 'month'],
+        'years' => ['years', 'year'],
+    ];
 
     /**
      * @param BackedEnum|string $timeReference
