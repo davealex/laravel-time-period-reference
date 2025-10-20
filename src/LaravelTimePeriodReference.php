@@ -10,12 +10,17 @@ use BackedEnum;
 
 readonly class LaravelTimePeriodReference
 {
+    private array $units;
+
     public function __construct(
         private ConfigRepository $config
     ) {
-        if (!$this->config->has('units')) {
-            $this->config->set('units', self::DEFAULT_UNITS);
+
+        if (!$this->config->has('laravel-time-period-reference.units')) {
+            $this->config->set('laravel-time-period-reference.units', self::DEFAULT_UNITS);
         }
+
+        $this->units = $this->config->get('laravel-time-period-reference.units');
     }
 
     const array DEFAULT_UNITS = [
@@ -43,7 +48,7 @@ readonly class LaravelTimePeriodReference
 
         $timeReferenceStringValue = strtolower(trim($timeReferenceString));
 
-        foreach ($this->config['units'] as $method => $references) {
+        foreach ($this->units as $method => $references) {
             foreach ($references as $reference) {
                 if (Str::contains($timeReferenceStringValue, $reference)) {
                     $value = $this->getPeriodValue($timeReferenceStringValue);
